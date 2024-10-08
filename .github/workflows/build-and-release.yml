@@ -37,21 +37,33 @@ jobs:
     - name: Build with PyInstaller
       run: pyinstaller --onefile encriptar.py
 
-    - name: Create ZIP and TAR archives (Linux only)
+    - name: Rename and zip binary
+      run: |
+        mv dist/encriptar${{ runner.os == 'Windows' && '.exe' || '' }} dist/${{ matrix.asset_name }}
+        cd dist && zip -j ${{ matrix.asset_name }}.zip ${{ matrix.asset_name }}
+
+    - name: Create source archives (Linux only)
       if: matrix.os == 'ubuntu-latest'
       run: |
         zip -j encriptar-source.zip encriptar.py requirements.txt
         tar -cvzf encriptar-source.tar.gz encriptar.py requirements.txt
 
-    - name: Upload artifact
+    - name: Upload binary artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.asset_name }}
+        name: ${{ matrix.asset_name }}.zip
+        path: dist/${{ matrix.asset_name }}.zip
+        compression-level: 0 # No compression as it's already zipped
+
+    - name: Upload source archives (Linux only)
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: source-archives
         path: |
-          dist/*
-          ${{ matrix.os == 'ubuntu-latest' && 'encriptar-source.zip' || '' }}
-          ${{ matrix.os == 'ubuntu-latest' && 'encriptar-source.tar.gz' || '' }}
-        compression-level: 9 # Máxima compresión
+          encriptar-source.zip
+          encriptar-source.tar.gz
+        compression-level: 0 # No compression as they're already compressed
 
   release:
     name: Create Release
@@ -91,7 +103,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in encriptar-*/encriptar* encriptar-linux/encriptar-source.*; do
+          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.exe.zip/encriptar-windows.exe.zip encriptar-macos.zip/encriptar-macos.zip source-archives/*; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
             curl -sSL \
