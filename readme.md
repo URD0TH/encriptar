@@ -128,10 +128,18 @@ Puedes descargar la última versión precompilada para tu sistema operativo desd
 
 Ejecuta el script sin argumentos para entrar en el modo interactivo:
 
+Python
 ```
 python encriptar.py
 ```
-
+Windows
+```
+python encriptar.exe
+```
+macOS / Linux
+```
+python encriptar
+```
 Sigue las instrucciones en pantalla para seleccionar la operación y proporcionar la ruta del archivo o carpeta.
 
 ### Modo Línea de Comandos
