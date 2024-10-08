@@ -1,0 +1,53 @@
+# Entorno virtual
+venv/
+env/
+*.venv
+*.virtualenv
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribución / empaquetado
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Archivos de PyInstaller
+*.manifest
+*.spec
+
+# Archivos de log
+*.log
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de claves y contraseñas
+*.key
+*.pem
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+
+# Archivos de prueba
+test_*
+
+# Archivos encriptados (por si acaso)
+*.encrypted
+
+# Archivo de clave
+/salt.salt
+/test
+/1
