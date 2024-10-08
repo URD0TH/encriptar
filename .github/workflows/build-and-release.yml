@@ -81,8 +81,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          release_name="Release ${{ github.ref_name }}-${{ steps.date.outputs.DATE }}"
           release_tag="${GITHUB_REF#refs/tags/}"
+          release_name="Encriptar $release_tag"
           release_notes="Automated release for tag $release_tag"
           
           response=$(curl -sSL \
@@ -103,7 +103,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.exe.zip/encriptar-windows.exe.zip encriptar-macos.zip/encriptar-macos.zip source-archives/*; do
+          # Upload binaries
+          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.exe.zip/encriptar-windows.exe.zip encriptar-macos.zip/encriptar-macos.zip; do
+            asset_name=$(basename "$asset")
+            echo "Uploading $asset_name"
+            curl -sSL \
+              -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @"$asset" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/${{ env.RELEASE_ID }}/assets?name=$asset_name"
+          done
+          
+          # Upload source archives separately
+          for asset in source-archives/*; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
             curl -sSL \
