@@ -54,13 +54,14 @@ jobs:
         tar -cvzf encriptar-source.tar.gz encriptar.py requirements.txt
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.asset_name }}
         path: |
           dist/*
           encriptar-source.zip
           encriptar-source.tar.gz
+        compression-level: 9 # Máxima compresión
 
   release:
     name: Create Release
