@@ -1,6 +1,24 @@
 # Encriptador de Archivos
 
-Este es un programa de línea de comandos en Python para encriptar y desencriptar archivos y carpetas. Además de trabajar con lineas de comando, se puede ejecutar en modo interactivo.
+Este es un programa de línea de comandos en Python para encriptar y desencriptar archivos y carpetas. Además de trabajar con líneas de comando, se puede ejecutar en modo interactivo.
+
+## Tabla de Contenidos
+
+- [Características](#características)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+  - [Desde el código fuente](#desde-el-código-fuente)
+  - [Usando binarios precompilados](#usando-binarios-precompilados)
+    - [Windows](#windows)
+    - [macOS](#macos)
+    - [Linux](#linux)
+- [Uso](#uso)
+  - [Modo Interactivo](#modo-interactivo)
+  - [Modo Línea de Comandos](#modo-línea-de-comandos)
+- [Compilación de binarios propios](#compilación-de-binarios-propios)
+- [Advertencias de Seguridad](#advertencias-de-seguridad)
+- [Contribuciones](#contribuciones)
+- [Licencia](#licencia)
 
 ## Características
 
@@ -16,29 +34,92 @@ Este es un programa de línea de comandos en Python para encriptar y desencripta
 
 ## Instalación
 
+### Desde el código fuente
+
 1. Clona este repositorio:
-   ```
-   git clone https://github.com/tu-usuario/encriptador-archivos.git
+   ```bash
+   git clone https://github.com/URD0TH/encriptar.git
    ```
 
-2. Crea un entorno virtual:
+2. Navega al directorio del proyecto:
+   ```bash
+   cd encriptar
    ```
+
+3. Crea un entorno virtual:
+   ```bash
    python -m venv venv
    ```
 
-3. Activa el entorno virtual:
+4. Activa el entorno virtual:
    - En Windows:
-     ```
+     ```bash
      .\venv\Scripts\activate
      ```
    - En macOS y Linux:
-     ```
+     ```bash
      source venv/bin/activate
      ```
 
-4. Instala las dependencias:
-   ```
+5. Instala las dependencias:
+   ```bash
    pip install -r requirements.txt
+   ```
+
+### Usando binarios precompilados
+
+Puedes descargar la última versión precompilada para tu sistema operativo desde nuestra página de [Releases](https://github.com/URD0TH/encriptar/releases).
+
+#### Windows
+1. Descarga el archivo `encriptador-windows.zip` de la última release.
+2. Haz clic derecho en el archivo descargado y selecciona "Extraer todo".
+3. Elige una ubicación para extraer los archivos y haz clic en "Extraer".
+4. Abre PowerShell o CMD:
+   - Para PowerShell: Presiona Win + X y selecciona "Windows PowerShell" o "PowerShell".
+   - Para CMD: Presiona Win + R, escribe "cmd" y presiona Enter.
+5. Navega hasta la carpeta donde extrajiste los archivos usando el comando `cd`. Por ejemplo:
+   ```
+   cd C:\Ruta\A\La\Carpeta\Extraida
+   ```
+6. Ejecuta el programa con:
+   ```
+   .\encriptador.exe
+   ```
+
+#### macOS
+1. Descarga el archivo `encriptador-macos.zip` de la última release.
+2. Haz doble clic en el archivo descargado para descomprimirlo.
+3. Abre una terminal y navega hasta la carpeta donde descomprimiste los archivos:
+   ```
+   cd /ruta/a/la/carpeta/descomprimida
+   ```
+4. Haz el archivo ejecutable con el comando:
+   ```
+   chmod +x encriptador-macos
+   ```
+5. Ejecuta el programa con:
+   ```
+   ./encriptador-macos
+   ```
+
+#### Linux
+1. Descarga el archivo `encriptador-linux.tar.gz` de la última release.
+2. Abre una terminal y navega hasta la carpeta donde descargaste el archivo.
+3. Descomprime el archivo con:
+   ```
+   tar -xzvf encriptador-linux.tar.gz
+   ```
+4. Navega a la carpeta descomprimida:
+   ```
+   cd encriptador-linux
+   ```
+5. Haz el archivo ejecutable con el comando:
+   ```
+   chmod +x encriptador-linux
+   ```
+6. Ejecuta el programa con:
+   ```
+   ./encriptador-linux
    ```
 
 ## Uso
@@ -81,7 +162,7 @@ python encriptar.exe -ec -r .\carpeta
 python encriptar.exe -da -r .\archivo_encriptado.txt
 python encriptar.exe -dc -r .\carpeta_encriptada
 ```
-Linux
+Linux /Mac
 
 ```
 python encriptar.bin -ea -r /ruta/archivo.txt
@@ -134,3 +215,31 @@ Las contribuciones son bienvenidas. Por favor, abre un issue para discutir cambi
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## Compilación de binarios propios
+
+Si prefieres compilar tus propios binarios, sigue estos pasos:
+
+1. Asegúrate de estar en el directorio del proyecto y tener el entorno virtual activado.
+
+2. Instala PyInstaller:
+   ```bash
+   pip install pyinstaller
+   ```
+
+3. Compila el binario:
+   ```bash
+   pyinstaller --onefile encriptar.py
+   ```
+
+4. El binario compilado se encontrará en la carpeta `dist`.
+
+5. Puedes ejecutar el binario directamente:
+   - En Windows:
+     ```bash
+     .\dist\encriptar.exe
+     ```
+   - En macOS y Linux:
+     ```bash
+     ./dist/encriptar
+     ```
