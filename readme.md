@@ -170,7 +170,7 @@ python encriptar.bin -ec -r /ruta/carpeta
 python encriptar.bin -da -r /ruta/archivo_encriptado.txt
 python encriptar.bin -dc -r /ruta/carpeta_encriptada
 ```
-## Creación de Binarios
+## Creación de Binarios Propios
 
 Para crear un ejecutable del programa, puedes usar PyInstaller:
 
@@ -226,31 +226,3 @@ Las contribuciones son bienvenidas. Por favor, abre un issue para discutir cambi
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## Compilación de binarios propios
-
-Si prefieres compilar tus propios binarios, sigue estos pasos:
-
-1. Asegúrate de estar en el directorio del proyecto y tener el entorno virtual activado.
-
-2. Instala PyInstaller:
-   ```bash
-   pip install pyinstaller
-   ```
-
-3. Compila el binario:
-   ```bash
-   pyinstaller --onefile encriptar.py
-   ```
-
-4. El binario compilado se encontrará en la carpeta `dist`.
-
-5. Puedes ejecutar el binario directamente:
-   - En Windows:
-     ```bash
-     .\dist\encriptar.exe
-     ```
-   - En macOS y Linux:
-     ```bash
-     ./dist/encriptar
-     ```
