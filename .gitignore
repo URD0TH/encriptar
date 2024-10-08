@@ -51,3 +51,4 @@ test_*
 /salt.salt
 /test
 /1
+/.python-version
