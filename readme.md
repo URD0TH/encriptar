@@ -21,7 +21,22 @@ Este es un programa de línea de comandos en Python para encriptar y desencripta
    git clone https://github.com/tu-usuario/encriptador-archivos.git
    ```
 
-2. Instala las dependencias:
+2. Crea un entorno virtual:
+   ```
+   python -m venv venv
+   ```
+
+3. Activa el entorno virtual:
+   - En Windows:
+     ```
+     .\venv\Scripts\activate
+     ```
+   - En macOS y Linux:
+     ```
+     source venv/bin/activate
+     ```
+
+4. Instala las dependencias:
    ```
    pip install -r requirements.txt
    ```
