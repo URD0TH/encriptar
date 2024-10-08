@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             asset_name: encriptar-linux
           - os: windows-latest
-            asset_name: encriptar-windows.exe
+            asset_name: encriptar-windows
           - os: macos-latest
             asset_name: encriptar-macos
 
@@ -64,15 +64,21 @@ jobs:
         path: dist/${{ matrix.asset_name }}.zip
         compression-level: 0 # No compression as it's already zipped
 
-    - name: Upload source archives (Linux only)
+    - name: Upload source ZIP (Linux only)
       if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: source-archives
-        path: |
-          encriptar-source.zip
-          encriptar-source.tar.gz
-        compression-level: 0 # No compression as they're already compressed
+        name: encriptar-source.zip
+        path: encriptar-source.zip
+        compression-level: 0
+
+    - name: Upload source TAR (Linux only)
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v4
+      with:
+        name: encriptar-source.tar.gz
+        path: encriptar-source.tar.gz
+        compression-level: 0
 
   release:
     name: Create Release
@@ -108,7 +114,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.zip/encriptar-windows.zip encriptar-macos.zip/encriptar-macos.zip source-archives/*; do
+          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.zip/encriptar-windows.zip encriptar-macos.zip/encriptar-macos.zip encriptar-source.zip/encriptar-source.zip encriptar-source.tar.gz/encriptar-source.tar.gz; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
             curl -sSL \
