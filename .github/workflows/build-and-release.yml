@@ -104,8 +104,14 @@ jobs:
             "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
           
           release_id=$(echo "$response" | jq -r '.id')
-          echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
+          echo "RELEASE_ID=$release_id" >> $GITHUB_OUTPUT
           echo "Release created with ID: $release_id"
+
+      - name: Debug Release ID
+        run: |
+          echo "Release ID: ${{ steps.create_release.outputs.RELEASE_ID }}"
+          echo "GitHub Ref: ${{ github.ref }}"
+          echo "GitHub Ref Name: ${{ github.ref_name }}"
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -122,5 +128,5 @@ jobs:
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Content-Type: application/octet-stream" \
               --data-binary @"$asset" \
-              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/${{ env.RELEASE_ID }}/assets?name=$asset_name"
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/${{ steps.create_release.outputs.RELEASE_ID }}/assets?name=$asset_name"
           done
