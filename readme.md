@@ -170,7 +170,6 @@ python encriptar.bin -ec -r /ruta/carpeta
 python encriptar.bin -da -r /ruta/archivo_encriptado.txt
 python encriptar.bin -dc -r /ruta/carpeta_encriptada
 ```
-
 ## Creación de Binarios
 
 Para crear un ejecutable del programa, puedes usar PyInstaller:
@@ -201,6 +200,18 @@ Para crear un ejecutable del programa, puedes usar PyInstaller:
    ```
 
 5. El ejecutable se creará en la carpeta `dist`.
+
+6. Puedes ejecutar el binario directamente:
+   - En Windows:
+     ```bash
+     .\dist\encriptar.exe
+     ```
+   - En macOS y Linux:
+     ```bash
+     ./dist/encriptar
+     ```
+
+Si prefieres obtener binarios precompilados para otros sistemas operativos, puedes encontrarlos en la sección de releases del proyecto. Si deseas compilar binarios para otros sistemas operativos desde un solo sistema operativo, puedes usar herramientas como Docker para crear contenedores con los entornos necesarios o utilizar servicios de CI/CD como GitHub Actions.
 
 ## Advertencias de Seguridad
 
