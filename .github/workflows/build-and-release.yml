@@ -66,14 +66,23 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}-${{ steps.date.outputs.DATE }}
-          draft: false
-          prerelease: false
+        run: |
+          release_name="Release ${{ github.ref_name }}-${{ steps.date.outputs.DATE }}"
+          release_tag="${GITHUB_REF#refs/tags/}"
+          release_notes="Automated release for tag $release_tag"
+          
+          response=$(curl -sSL \
+            -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"tag_name\": \"$release_tag\",\"name\": \"$release_name\",\"body\": \"$release_notes\",\"draft\": false,\"prerelease\": false}" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
+          
+          release_id=$(echo "$response" | jq -r '.id')
+          echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
+          echo "Release created with ID: $release_id"
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -85,8 +94,10 @@ jobs:
           for asset in encriptar-*/encriptar* encriptar-linux/encriptar-source.*; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
-            curl -H "Authorization: token $GITHUB_TOKEN" \
-                 -H "Content-Type: application/octet-stream" \
-                 --data-binary @"$asset" \
-                 "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=$asset_name"
+            curl -sSL \
+              -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @"$asset" \
+              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/${{ env.RELEASE_ID }}/assets?name=$asset_name"
           done
