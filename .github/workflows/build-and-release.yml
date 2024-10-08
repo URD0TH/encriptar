@@ -108,7 +108,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.exe.zip/encriptar-windows.exe.zip encriptar-macos.zip/encriptar-macos.zip source-archives/*; do
+          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.zip/encriptar-windows.zip encriptar-macos.zip/encriptar-macos.zip source-archives/*; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
             curl -sSL \
