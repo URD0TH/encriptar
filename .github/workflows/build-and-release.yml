@@ -37,7 +37,8 @@ jobs:
     - name: Build with PyInstaller
       run: pyinstaller --onefile encriptar.py
 
-    - name: Create ZIP and TAR archives
+    - name: Create ZIP and TAR archives (Linux only)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         zip -j encriptar-source.zip encriptar.py requirements.txt
         tar -cvzf encriptar-source.tar.gz encriptar.py requirements.txt
@@ -48,8 +49,8 @@ jobs:
         name: ${{ matrix.asset_name }}
         path: |
           dist/*
-          encriptar-source.zip
-          encriptar-source.tar.gz
+          ${{ matrix.os == 'ubuntu-latest' && 'encriptar-source.zip' || '' }}
+          ${{ matrix.os == 'ubuntu-latest' && 'encriptar-source.tar.gz' || '' }}
         compression-level: 9 # Máxima compresión
 
   release:
@@ -70,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release Encriptar v${{ steps.date.outputs.DATE }}
+          release_name: Release ${{ github.ref_name }}-${{ steps.date.outputs.DATE }}
           draft: false
           prerelease: false
 
@@ -81,7 +82,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for asset in encriptar-*/encriptar* encriptar-*/encriptar-source.*; do
+          for asset in encriptar-*/encriptar* encriptar-linux/encriptar-source.*; do
             asset_name=$(basename "$asset")
             echo "Uploading $asset_name"
             curl -H "Authorization: token $GITHUB_TOKEN" \
