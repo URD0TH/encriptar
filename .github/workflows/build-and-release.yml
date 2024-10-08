@@ -26,7 +26,8 @@ jobs:
     - name: Generate new tag
       id: generate_tag
       run: |
-        new_tag="v$(date +'%Y%m%d%H%M')"
+        tag_prefix=$(git describe --tags --abbrev=0 | sed 's/^v//')
+        new_tag="${tag_prefix} V$(date +'%Y%m%d%H%M')"
         echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
         git config user.name github-actions
         git config user.email github-actions@github.com
