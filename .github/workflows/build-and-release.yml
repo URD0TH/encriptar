@@ -57,76 +57,48 @@ jobs:
         zip -j encriptar-source.zip encriptar.py requirements.txt
         tar -cvzf encriptar-source.tar.gz encriptar.py requirements.txt
 
-    - name: Upload binary artifact
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.asset_name }}.zip
         path: dist/${{ matrix.asset_name }}.zip
         compression-level: 0 # No compression as it's already zipped
 
-    - name: Upload source ZIP (Linux only)
+    - name: Upload source archives (Linux only)
       if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: encriptar-source.zip
-        path: encriptar-source.zip
-        compression-level: 0
-
-    - name: Upload source TAR (Linux only)
-      if: runner.os == 'Linux'
-      uses: actions/upload-artifact@v4
-      with:
-        name: encriptar-source.tar.gz
-        path: encriptar-source.tar.gz
+        name: source-archives
+        path: |
+          encriptar-source.zip
+          encriptar-source.tar.gz
         compression-level: 0
 
   release:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create Release
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          release_tag="${GITHUB_REF#refs/tags/}"
-          release_name="Encriptar $release_tag"
-          release_notes="Automated release for tag $release_tag"
-          
-          response=$(curl -sSL \
-            -X POST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"tag_name\": \"$release_tag\",\"name\": \"$release_name\",\"body\": \"$release_notes\",\"draft\": false,\"prerelease\": false}" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
-          
-          release_id=$(echo "$response" | jq -r '.id')
-          echo "RELEASE_ID=$release_id" >> $GITHUB_OUTPUT
-          echo "Release created with ID: $release_id"
-
-      - name: Debug Release ID
-        run: |
-          echo "Release ID: ${{ steps.create_release.outputs.RELEASE_ID }}"
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "GitHub Ref Name: ${{ github.ref_name }}"
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
-      - name: Upload Release Assets
+      - name: List downloaded artifacts
+        run: |
+          echo "Contents of artifacts directory:"
+          ls -R artifacts
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Encriptar ${{ github.ref_name }}
+          files: |
+            artifacts/**/*.zip
+            artifacts/**/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          for asset in encriptar-linux.zip/encriptar-linux.zip encriptar-windows.zip/encriptar-windows.zip encriptar-macos.zip/encriptar-macos.zip encriptar-source.zip/encriptar-source.zip encriptar-source.tar.gz/encriptar-source.tar.gz; do
-            asset_name=$(basename "$asset")
-            echo "Uploading $asset_name"
-            curl -sSL \
-              -X POST \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary @"$asset" \
-              "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/${{ steps.create_release.outputs.RELEASE_ID }}/assets?name=$asset_name"
-          done
