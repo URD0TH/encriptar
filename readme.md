@@ -65,6 +65,9 @@ Este es un programa de línea de comandos en Python para encriptar y desencripta
    ```bash
    pip install -r requirements.txt
    ```
+## Archivos Zip y Tar.gz
+encriptador-source.zip y encriptador-source.tar.gz
+Estos archivos son versiones minimas del script de python, su uso es exactamente igual que los binarios propios o los archivos clonados del repositorio              
 
 ### Usando binarios precompilados
 
@@ -103,11 +106,11 @@ Puedes descargar la última versión precompilada para tu sistema operativo desd
    ```
 
 #### Linux
-1. Descarga el archivo `encriptador-linux.tar.gz` de la última release.
+1. Descarga el archivo `encriptador-linux.zip` de la última release.
 2. Abre una terminal y navega hasta la carpeta donde descargaste el archivo.
 3. Descomprime el archivo con:
    ```
-   tar -xzvf encriptador-linux.tar.gz
+   unzip encriptador-linux.zip
    ```
 4. Navega a la carpeta descomprimida:
    ```
