@@ -134,11 +134,11 @@ python encriptar.py
 ```
 Windows
 ```
-python encriptar.exe
+.\encriptar.exe
 ```
 macOS / Linux
 ```
-python encriptar
+./encriptar
 ```
 Sigue las instrucciones en pantalla para seleccionar la operación y proporcionar la ruta del archivo o carpeta.
 
