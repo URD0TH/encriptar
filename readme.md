@@ -156,6 +156,7 @@ Usa los siguientes argumentos para ejecutar operaciones específicas:
 - `-dc` o `--desencriptar-carpeta`: Desencriptar una carpeta
 - `-r` o `--ruta`: Ruta del archivo o carpeta a procesar
 - `-p` o `--password`: Contraseña para la clave (opcional, no recomendado por seguridad)
+- `-e` o `--excluir`: Patrones de archivos o carpetas a excluir (separados por comas). Ejemplo: *.txt,*.log,carpeta1
 
 Ejemplos:
 Python
@@ -164,6 +165,7 @@ python encriptar.py -ea -r ./archivo.txt
 python encriptar.py -ec -r ./carpeta
 python encriptar.py -da -r ./archivo_encriptado.txt
 python encriptar.py -dc -r ./carpeta_encriptada
+python encriptar.py -dc -r ./carpeta_encriptada -e *.txt,*.log,carpeta1
 ```
 Windows
 
@@ -172,6 +174,7 @@ python encriptar.exe -ea -r .\archivo.txt
 python encriptar.exe -ec -r .\carpeta
 python encriptar.exe -da -r .\archivo_encriptado.txt
 python encriptar.exe -dc -r .\carpeta_encriptada
+python encriptar.exe -dc -r .\carpeta_encriptada -e *.txt,*.log,carpeta1
 ```
 Linux /Mac
 
@@ -180,6 +183,7 @@ python encriptar.bin -ea -r /ruta/archivo.txt
 python encriptar.bin -ec -r /ruta/carpeta
 python encriptar.bin -da -r /ruta/archivo_encriptado.txt
 python encriptar.bin -dc -r /ruta/carpeta_encriptada
+python encriptar.bin -dc -r /ruta/carpeta_encriptada -e *.txt,*.log,carpeta1
 ```
 ## Creación de Binarios Propios
 
