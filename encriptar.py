@@ -124,7 +124,7 @@ def encriptar_carpeta(carpeta_ruta, password, patrones_exclusion=None):
     respaldo = crear_respaldo(carpeta_ruta)
     if respaldo:
         print(f"Se ha creado un respaldo de la carpeta original: {respaldo}")
-        # Encriptar el respaldo también
+        # Encriptar el respaldo
         encriptar_archivo(respaldo, password)
     
     for root, dirs, files in os.walk(carpeta_ruta):
@@ -227,12 +227,20 @@ def menu_interactivo():
             print("Opción no válida. Por favor, seleccione una opción válida.")
 
 def debe_procesar_archivo(archivo_ruta, patrones_exclusion):
+    # Archivos críticos que nunca deben encriptarse
+    archivos_criticos = ['clave.key', 'salt.salt']
+    nombre_archivo = os.path.basename(archivo_ruta)
+    
+    # Verificar si es un archivo crítico
+    if nombre_archivo in archivos_criticos:
+        print(f"Archivo crítico excluido: {archivo_ruta}")
+        return False
+    
+    # Verificar patrones de exclusión proporcionados por el usuario
     if not patrones_exclusion:
         return True
     
     from fnmatch import fnmatch
-    nombre_archivo = os.path.basename(archivo_ruta)
-    
     for patron in patrones_exclusion:
         if fnmatch(nombre_archivo, patron.strip()) or fnmatch(archivo_ruta, patron.strip()):
             return False
@@ -252,6 +260,13 @@ def crear_respaldo(ruta, formato='tar'):
         nombre_respaldo = os.path.join(backup_dir, f"backup_{nombre_base}_{timestamp}.tar.gz")
         try:
             with tarfile.open(nombre_respaldo, "w:gz") as tar:
+                # Agregar archivos críticos al backup si existen
+                archivos_criticos = ['clave.key', 'salt.salt']
+                for archivo in archivos_criticos:
+                    if os.path.exists(archivo):
+                        tar.add(archivo)
+                
+                # Agregar el contenido principal
                 tar.add(ruta, arcname=os.path.basename(ruta))
             print(f"Respaldo creado exitosamente: {nombre_respaldo}")
             return nombre_respaldo
@@ -262,6 +277,13 @@ def crear_respaldo(ruta, formato='tar'):
         nombre_respaldo = os.path.join(backup_dir, f"backup_{nombre_base}_{timestamp}.zip")
         try:
             with zipfile.ZipFile(nombre_respaldo, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                # Agregar archivos críticos al backup si existen
+                archivos_criticos = ['clave.key', 'salt.salt']
+                for archivo in archivos_criticos:
+                    if os.path.exists(archivo):
+                        zipf.write(archivo, archivo)
+                
+                # Agregar el contenido principal
                 if os.path.isfile(ruta):
                     zipf.write(ruta, os.path.basename(ruta))
                 else:
