@@ -7,6 +7,9 @@ import getpass
 from cryptography.hazmat.primitives import hashes
 import argparse
 import sys
+import tarfile
+import zipfile
+from datetime import datetime
 
 def cargar_clave_con_password(password):
     if not isinstance(password, bytes):
@@ -60,6 +63,13 @@ def encriptar_archivo(ruta, clave, patrones_exclusion=None):
         print(f"Excluido: {ruta}")
         return False
     
+    # Crear respaldo antes de encriptar
+    respaldo = crear_respaldo(ruta)
+    if respaldo:
+        print(f"Se ha creado un respaldo del archivo original: {respaldo}")
+        # Encriptar el respaldo también
+        encriptar_archivo(respaldo, clave)
+    
     fernet = Fernet(clave)
     
     try:
@@ -109,6 +119,13 @@ def encriptar_carpeta(carpeta_ruta, password, patrones_exclusion=None):
     
     archivos_procesados = 0
     archivos_excluidos = 0
+    
+    # Crear respaldo antes de encriptar
+    respaldo = crear_respaldo(carpeta_ruta)
+    if respaldo:
+        print(f"Se ha creado un respaldo de la carpeta original: {respaldo}")
+        # Encriptar el respaldo también
+        encriptar_archivo(respaldo, password)
     
     for root, dirs, files in os.walk(carpeta_ruta):
         for nombre_archivo in files:
@@ -220,6 +237,44 @@ def debe_procesar_archivo(archivo_ruta, patrones_exclusion):
         if fnmatch(nombre_archivo, patron.strip()) or fnmatch(archivo_ruta, patron.strip()):
             return False
     return True
+
+def crear_respaldo(ruta, formato='tar'):
+    """Crea un archivo de respaldo en formato tar o zip"""
+    # Crear directorio de respaldos si no existe
+    backup_dir = "backups"
+    if not os.path.exists(backup_dir):
+        os.makedirs(backup_dir)
+    
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    nombre_base = os.path.basename(ruta)
+    
+    if formato == 'tar':
+        nombre_respaldo = os.path.join(backup_dir, f"backup_{nombre_base}_{timestamp}.tar.gz")
+        try:
+            with tarfile.open(nombre_respaldo, "w:gz") as tar:
+                tar.add(ruta, arcname=os.path.basename(ruta))
+            print(f"Respaldo creado exitosamente: {nombre_respaldo}")
+            return nombre_respaldo
+        except Exception as e:
+            print(f"Error al crear el respaldo tar: {str(e)}")
+            return None
+    else:
+        nombre_respaldo = os.path.join(backup_dir, f"backup_{nombre_base}_{timestamp}.zip")
+        try:
+            with zipfile.ZipFile(nombre_respaldo, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                if os.path.isfile(ruta):
+                    zipf.write(ruta, os.path.basename(ruta))
+                else:
+                    for root, dirs, files in os.walk(ruta):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.relpath(file_path, os.path.dirname(ruta))
+                            zipf.write(file_path, arcname)
+            print(f"Respaldo creado exitosamente: {nombre_respaldo}")
+            return nombre_respaldo
+        except Exception as e:
+            print(f"Error al crear el respaldo zip: {str(e)}")
+            return None
 
 def main():
     args = parse_arguments()

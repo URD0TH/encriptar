@@ -26,6 +26,11 @@ Este es un programa de línea de comandos en Python para encriptar y desencripta
 - Encriptación y desencriptación de carpetas completas
 - Interfaz de línea de comandos y modo interactivo
 - Generación y gestión segura de claves de encriptación
+- Generación automática de respaldos para recuperación de archivos
+
+> **¡IMPORTANTE!** 
+> El programa genera automáticamente un respaldo de seguridad de los archivos originales antes de encriptarlos.
+> Los respaldos se crean en la carpeta "backups"  en donde se ejecuta el programa y se encriptan usando la misma contraseña para facilitar la recuperación.
 
 ## Requisitos
 
@@ -232,7 +237,8 @@ Si prefieres obtener binarios precompilados para otros sistemas operativos, pued
 
 - No comparta su clave de encriptación o contraseña.
 - Evite usar la opción `-p` en la línea de comandos, ya que la contraseña podría quedar registrada en el historial.
-- Guarde una copia de seguridad de sus archivos originales antes de encriptarlos.
+- Los respaldos automáticos se almacenan con el sufijo "_backup" y utilizan la misma contraseña que el archivo original.
+- Se recomienda almacenar los respaldos en una ubicación diferente por seguridad.
 
 ## Contribuciones
 
